@@ -1,0 +1,20 @@
+{% extends "students/base.html" %}
+{% block content %}
+{% for obj in vyhovna %}
+  <table>
+  <div class="name">
+    <div>
+    <tr>
+       <td class="name">{{ obj.name }}</td>
+    </tr>
+    </div>
+    <div>
+    <tr>
+       <td class="text">{{ obj.text }}</td>
+    </tr>
+    <tr>
+    </tr>
+  </div>
+  </table>
+  {% endfor %}
+{% endblock content %}

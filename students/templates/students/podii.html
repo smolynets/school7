@@ -1,0 +1,21 @@
+{% extends "students/base.html" %}
+{% block content %}
+ {% for obj in podii %}
+  
+    <tr>
+       <p class="name">{{ obj.name }}</p>
+    </tr>
+    {% if obj.photo %}
+    <tr>
+       <p class="photo" ><img src="{{ obj.photo.url }}" />
+    </p>
+    </tr>
+    {% endif %}
+    <tr>
+       <p class="text">{{ obj.text }}</p>
+    </tr>
+    <tr>
+    </tr>
+  
+  {% endfor %}
+{% endblock content %}
