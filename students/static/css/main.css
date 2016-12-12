@@ -26,3 +26,8 @@
   text-align: center;
 }
 
+
+
+#name, #photo, #text{
+  max-width: 500px;
+}

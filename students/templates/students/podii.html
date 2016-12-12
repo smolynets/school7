@@ -1,7 +1,7 @@
 {% extends "students/base.html" %}
 {% block content %}
- {% for obj in podii %}
-  
+<a href="{% url "podii_add" %}" class="btn btn-primary">Додати подію</a> 
+ {% for obj in podii %} 
     <tr>
        <p class="name">{{ obj.name }}</p>
     </tr>

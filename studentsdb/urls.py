@@ -12,6 +12,8 @@ urlpatterns = patterns('',
     url(r'^zno/$', 'students.views.zno', name='zno'),
     url(r'^rozklad/$', 'students.views.rozklad', name='rozlad'),
     url(r'^istoria/$', 'students.views.istoria', name='istoria'),
+    ###adding
+    url(r'^podii_add/$', 'students.views.podii_add', name='podii_add'),
 
 
     url(r'^admin/', include(admin.site.urls)),
