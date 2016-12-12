@@ -110,7 +110,7 @@ def podii_add(request):
              else:
                 data['photo'] = photo
            
-      # save student
+      # save 
       if not errors:
         podii = Podii(**data)
         podii.save()
