@@ -16,6 +16,17 @@ urlpatterns = patterns('',
     url(r'^podii_add/$', 'students.views.podii_add', name='podii_add'),
 
 
+
+    ###edit
+    url(r'^podii/(?P<pk>\d+)/edit/$',
+       'students.views.podii_edit', name='podii_edit'),
+
+
+    ###delete
+    url(r'^podii/(?P<pk>\d+)/delete/$',
+       'students.views.podii_delete', name='podii_delete'),
+
+
     url(r'^admin/', include(admin.site.urls)),
 )
 

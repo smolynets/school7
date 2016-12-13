@@ -11,11 +11,12 @@
     </p>
     </tr>
     {% endif %}
-    <tr>
-       <p class="text">{{ obj.text }}</p>
+    <tr class="text">
+       <p>{{ obj.text }}</p>
     </tr>
     <tr>
+    <a href="{% url "podii_edit" obj.id %}" id="buttom" class="btn btn-primary">Редагувати</a>
+    <a href="{% url "podii_delete" obj.id %}" id="buttom" class="btn btn-primary">Видалити</a>
     </tr>
-  
   {% endfor %}
 {% endblock content %}

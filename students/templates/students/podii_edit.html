@@ -10,16 +10,17 @@
 {% endif %}
 {% endblock status_message %}
 {% block content %}
-<h1 class="h1">Додавання подій</h1>
-<form action="{% url "podii_add" %}" method="post"
+<form action="{% url "podii_edit" podii.id %}" method="post"
 enctype="multipart/form-data" role="form" class="form-horizontal">
 {% csrf_token %}
+
+<h1 class="h1">Редагування події</h1>
 
 <!--name-->
 <div class="form-group {% if errors.name %}has-error{% endif%}">
 <label for="" class="col-sm-2 control-label">Заголовок*</label>
 <div class="col-sm-10">
-<input type="text" value="{{ request.POST.name }}"
+<input type="text" value="{{ podii.name }}"
 name="name" class="form-control" />
 <span class="help-block">{{ errors.name }}</span>
 </div>
@@ -41,8 +42,8 @@ name="name" class="form-control" />
 <div class="form-group {% if errors.text %}has-error{% endif%}">
 <label for="text" class="col-sm-2 control-label">Текст статі</label>
 <div class="col-sm-10">
-<textarea name="text" class="form-control" 
-value="{{ request.POST.text }}"></textarea>
+<input type="text" value="{{ podii.text }}"
+name="text" class="form-control" />
 <span class="help-block">{{ errors.text }}</span>
 </div>
 </div>
@@ -52,7 +53,7 @@ value="{{ request.POST.text }}"></textarea>
 <div class="form-group">
 <label class="col-sm-2 control-label"></label>
 <div class="col-sm-10">
-<input type="submit" value="Додати" name="add_button"
+<input type="submit" value="Зберегти" name="add_button"
 class="btn btn-primary" />
 <button type="submit" name="cancel_button"
 class="btn btn-link">Скасувати</button>

@@ -72,6 +72,11 @@ def istoria(request):
 
 
 
+
+
+
+
+#########################################################################
 ###adding
 
 def podii_add(request):
@@ -128,3 +133,75 @@ def podii_add(request):
 
 
 
+
+
+
+
+
+
+
+########################################################################
+#####editing
+
+def podii_edit(request, pk):
+    events = Podii.objects.filter(pk=pk)
+
+    
+    if request.method == "POST":
+        data = Podii.objects.get(pk=pk)
+        if request.POST.get('add_button') is not None:
+            errors = {}
+            
+            #fields
+            title = request.POST.get('name', '').strip()
+            if not title:
+                errors['name'] = u"Заголовок є обовʼязковим."
+            else:
+                data.name = title
+
+            photo = request.FILES.get('photo')
+            if photo:
+             if len(photo) > (10 * 1024):
+               errors['photo'] = u"Файл завеликий"
+             else:
+               data.photo = photo
+
+            text = request.POST.get('text', '').strip()
+            if not text:
+                errors['text'] = u"Текст є обовʼязковим."
+            else:
+                data.text = text
+
+            #errors
+            if errors:
+                return render(request, 'students/podii_edit.html', {'pk': pk, 'events': data, 'errors': errors})
+            else:
+                data.save()
+                return HttpResponseRedirect( reverse('podii'))
+        elif request.POST.get('cancel_button') is not None:
+
+            return HttpResponseRedirect(u'%s?status_message=Редагування події скасовано!' % reverse('podii'))
+        
+    else:
+        return render(request,
+                      'students/podii_edit.html',
+                      {'pk': pk, 'podii': events[0]})
+
+
+
+
+#delete podii
+def podii_delete(request, pk):
+    events = Podii.objects.filter(pk=pk)
+    
+    if request.method == "POST":
+        if request.POST.get('yes') is not None:
+          events.delete()
+          return HttpResponseRedirect( u'%s?status_message=Подію успішно видалено!'  % reverse('podii'))
+        elif request.POST.get('cancel_button') is not None:
+          return HttpResponseRedirect( u'%s?status_message=Видалення  події  скасовано!'  % reverse('podii'))
+        
+    else:
+        return render(request,
+                      'students/podii_delete.html',
+                      {'pk': pk, 'podii': events[0]})

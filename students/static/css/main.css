@@ -18,7 +18,6 @@
 	font-family: "Times New Roman";
 	font-size: 180%;
 	margin-top: 40px;
-  margin-bottom: 500px;
 	padding-left: 50px;
 }
 
@@ -26,8 +25,20 @@
   text-align: center;
 }
 
+/* Form Styles */
+textarea,
+select,
+input {
+max-width: 300px;
+}
 
 
-#name, #photo, #text{
+
+#buttom{
   max-width: 500px;
+  margin-bottom: 500px;
+}
+
+.h1{
+	padding-left: 190px;
 }
