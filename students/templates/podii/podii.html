@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block content %}
+<a href="{% url "podii_add" %}" class="btn btn-primary">Додати подію</a> 
+ {% for obj in podii %} 
+    <tr>
+       <p class="name">{{ obj.name }}</p>
+    </tr>
+    {% if obj.photo %}
+    <tr>
+       <p class="photo" ><img src="{{ obj.photo.url }}" />
+    </p>
+    </tr>
+    {% endif %}
+    <tr class="text">
+       <p>{{ obj.text }}</p>
+    </tr>
+    <tr>
+    <a href="{% url "podii_edit" obj.id %}" id="buttom" class="btn btn-primary">Редагувати</a>
+    <a href="{% url "podii_delete" obj.id %}" id="buttom2" class="btn btn-primary">Видалити</a>
+    </tr>
+  {% endfor %}
+{% endblock content %}

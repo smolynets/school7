@@ -37,8 +37,33 @@ max-width: 300px;
 #buttom{
   max-width: 500px;
   margin-bottom: 500px;
+  background: #008000;
+}
+
+#buttom2{
+  max-width: 500px;
+  margin-bottom: 500px;
+  background: #FF0000;
 }
 
 .h1{
 	padding-left: 190px;
+}
+
+
+#button_yes{
+  background: #008000;
+}
+
+#button_cancel{
+  background: #FFFF00;
+}
+
+#buttom3{
+  background: #FF0000;
+}
+
+#textarea{
+  width:400px;
+  height:400px;
 }

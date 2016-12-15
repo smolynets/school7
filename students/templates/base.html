@@ -1,0 +1,47 @@
+{% load static from staticfiles %}
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8"/>
+<title>Добросинська  ЗОШ</title>
+<meta name="description" value="Добросинська  ЗО" />
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet"
+href="https://cdn.jsdelivr.net/bootstrap/3.3.0/css/bootstrap.min.css">
+<link rel="stylesheet" href="{% static "css/main.css" %}">
+</head>
+<body>
+<!-- Start Container -->
+<div class="container">
+<!-- Start Header -->
+<div class="row" id="header">
+<div class="col-xs-8">
+<h1>Добросинська школа</h1>
+</div>
+<!-- End Header -->
+<!-- Start subheader -->
+<div class="row" id="sub-header">
+<div class="col-xs-12">
+<ul class="nav nav-tabs" role="tablist">
+<li role="presentation" {% if request.path == '/' %}class="active"{% endif %}><a href="{% url "podii" %}">Події</a></li>
+<li role="presentation" {% if '/biblioteka' in request.path %}class="active"{% endif %}><a href="{% url "biblioteka" %}" %}">Бібліотека</a></li>
+<li role="presentation" {% if '/vuhovna' in request.path %}class="active"{% endif %}><a href="{% url "vyhovna" %}">Виховна робота</a></li>
+<li role="presentation" {% if '/muzey' in request.path %}class="active"{% endif %}><a href="{% url "muzey" %}">Музей</a></li>
+<li role="presentation" {% if '/kolek' in request.path %}class="active"{% endif %}><a href="{% url "kolek" %}">Педагогічний колектив</a></li>
+<li role="presentation" {% if '/psuholoh' in request.path %}class="active"{% endif %}><a href="{% url "psuholoh" %}">Поради психолога</a></li>
+<li role="presentation" {% if '/zno' in request.path %}class="active"{% endif %}><a href="{% url "zno" %}">Про ЗНО</a></li>
+<li role="presentation" {% if '/rozklad' in request.path %}class="active"{% endif %}><a href="{% url "rozlad" %}">Розклад</a></li>
+<li role="presentation" {% if '/ist' in request.path %}class="active"{% endif %}><a href="{% url "istoria" %}">Історія школи в фото</a></li>
+
+</ul>
+</div>
+</div>
+{% block status_message %}
+{% if request.GET.status_message %}
+<div class="alert alert-warning" role="alert">{{ request.GET.status_message }}</div>
+{% endif %}
+{% endblock %}
+{% block content %}{% endblock content %}
+
+</body>
+</html>
