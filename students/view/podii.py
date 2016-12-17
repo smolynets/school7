@@ -5,70 +5,77 @@ from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseRedirect
 from django.core.urlresolvers import reverse
 from PIL import Image
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.contrib import messages
+from django.views.generic import CreateView,UpdateView, ListView, DeleteView
+from django.forms import ModelForm
+from crispy_forms.helper import FormHelper
+from crispy_forms.layout import Submit
+from crispy_forms.bootstrap import FormActions
+from crispy_forms.layout import Submit, Button
 from ..models import Podii
 
 #list
-def podii(request):
-        podii = Podii.objects.all()
-	return render(request, 'podii/podii.html', 
-		{'podii': podii})
+class Podii_List(ListView):
+  model = Podii
+  context_object_name = 'podii'
+  template_name = 'podii/podii.html'
+  def get_queryset(self):
+    qs = super(Podii_List, self).get_queryset()
+    return qs
 
 
 
 #########################################################################
 ###adding
+#crispy
 
-def podii_add(request):
-  # was form posted?
-  if request.method == "POST":
-    # was form add button clicked?
-    if request.POST.get('add_button') is not None:
-      # errors collection
-      errors = {}
-      # data for student object
-      data = {}
-      # validate user input
-      name = request.POST.get('name', '').strip()
-      if not name:
-        errors['name'] = u"Заголовок є обов'язковим"
-      else:
-        data['name'] = name
-      text = request.POST.get('text', '').strip()
-      if not text:
-        errors['text'] = u"Текст є обов'язковим"
-      else:
-        data['text'] = text
-      
-      photo = request.FILES.get('photo')
-      if photo:
-        if photo.name.split(".")[-1].lower() not in ('jpg', 'jpeg', 'png', 'gif'):
-           errors['photo'] = u"Файл має бути одного з наступних типів: jpg, jpeg, png, gif"
-        else:
-           try:
-             Image.open(photo)
-           except Exception:
-             errors['photo'] = u"Завантажений файл не є файлом зображення або пошкоджений"
-           else:
-             if photo.size > 2 * 1024 * 1024:
-                errors['photo'] = u"Фото занадто велике (розмір файлу має бути менше 2Мб)"
-             else:
-                data['photo'] = photo
-           
-      # save 
-      if not errors:
-        podii = Podii(**data)
-        podii.save()
-        # redirect to podii list
-        return HttpResponseRedirect( u'%s?status_message=Подія успішно додана'  % reverse('podii'))
-      else:
-        # render form with errors and previous user input
-        return render(request, 'podii/podii_add_edit.html', {'errors': errors})
-    elif request.POST.get('cancel_button') is not None:
-      # redirect to home page on cancel button
-      return HttpResponseRedirect( u'%s?status_message=Додавання події скасовано!' % reverse('podii'))
-  else:
-   # initial form render
-   return render(request, 'podii/podii_add_edit.html', {})
+class PodiiCreateForm(ModelForm):
+    class Meta:
+        model = Podii
+        fields = '__all__'
+
+    def __init__(self,*args, **kwargs):
+        super(PodiiCreateForm,self).__init__(*args, **kwargs)
+
+        self.helper = FormHelper(self)
+
+            # return HttpResponseRedirect(
+            #     u'%s?status_message=5' %  reverse('main'))
+
+
+        # set form tag attributes
+        self.helper.form_action = reverse('podii_add')
+        # self.helper.form_action = u'%s?status_message=5' % reverse('podii_add')
+
+        self.helper.form_method = 'POST'
+        self.helper.form_class = 'col-sm-12 form-horizontal'
+
+        # set form field properties
+        self.helper.help_text_inline = True
+        self.helper.html5_required = True
+        self.helper.label_class = 'col-sm-2 control-label'
+        self.helper.field_class = 'col-sm-8 input-group'
+
+        # add buttons
+        # self.helper.layout.fields.append(self)
+        self.helper.layout.fields.append(FormActions(
+            Submit('add_button', (u'Створити'), css_class="btn btn-primary"),
+            Submit('cancel_button', (u'Скасувати'), css_class="btn btn-link"),
+)) 
+
+class PodiiCreate(CreateView):
+  model = Podii
+  template_name = 'podii/podii_add_edit.html'
+  form_class = PodiiCreateForm
+  def get_success_url(self):
+    return u'%s?status_message=Подію успішно створено!' % reverse('podii')
+  def post(self, request, *args, **kwargs):
+    if request.POST.get('cancel_button'):
+      return HttpResponseRedirect(u'%s?status_message=Створення події відмінено!'% reverse('podii'))
+    else:
+      return super(PodiiCreate, self).post(request, *args, **kwargs)
+
 
 
 
@@ -82,65 +89,60 @@ def podii_add(request):
 ########################################################################
 #####editing
 
-def podii_edit(request, pk):
-    events = Podii.objects.filter(pk=pk)
+#crispy
+class PodiiUpdateForm(ModelForm):
+  class Meta:
+    model = Podii
+  def __init__(self, *args, **kwargs):
+      super(PodiiUpdateForm, self).__init__(*args, **kwargs)
+      self.helper = FormHelper(self)
+      # set form tag attributes
+      self.helper.form_action = reverse('podii_edit',kwargs={'pk': kwargs['instance'].id})
+      self.helper.form_method = 'POST'
+      self.helper.form_class = 'form-horizontal'
+      # set form field properties
+      self.helper.help_text_inline = True
+      self.helper.html5_required = True
+      self.helper.label_class = 'col-sm-2 control-label'
+      self.helper.field_class = 'col-sm-10'
+      # add buttons
+      self.helper.layout.fields.append(FormActions(
+        Submit('add_button', u'Зберегти', css_class="btn btn-primary"),
+        Submit('cancel_button', u'Скасувати', css_class="btn btn-link"),
+      ))
 
-    
-    if request.method == "POST":
-        data = Podii.objects.get(pk=pk)
-        if request.POST.get('edit_button') is not None:
-            errors = {}
-            
-            #fields
-            title = request.POST.get('name', '').strip()
-            if not title:
-                errors['name'] = u"Заголовок є обовʼязковим."
-            else:
-                data.name = title
 
-            photo = request.FILES.get('photo')
-            if photo:
-             if len(photo) > (10 * 1024):
-               errors['photo'] = u"Файл завеликий"
-             else:
-               data.photo = photo
 
-            text = request.POST.get('text', '').strip()
-            if not text:
-                errors['text'] = u"Текст є обовʼязковим."
-            else:
-                data.text = text
-
-            #errors
-            if errors:
-                return render(request, 'podii/podii_edit.html', {'pk': pk, 'events': data, 'errors': errors})
-            else:
-                data.save()
-                return HttpResponseRedirect( u'%s?status_message=Подія успішно редагована'  % reverse('podii'))
-        elif request.POST.get('cancel_button') is not None:
-
-            return HttpResponseRedirect(u'%s?status_message=Редагування події скасовано!' % reverse('podii'))
-        
+class PodiiUpdate(UpdateView):
+  model = Podii
+  template_name = 'podii/podii_add_edit.html'
+  form_class = PodiiUpdateForm
+  def get_success_url(self):
+    return u'%s?status_message=Подію успішно збережено!' % reverse('podii')
+  def post(self, request, *args, **kwargs):
+    if request.POST.get('cancel_button'):
+      return HttpResponseRedirect(u'%s?status_message=Редагування події відмінено!'% reverse('podii'))
     else:
-        return render(request,
-                      'podii/podii_add_edit.html',
-                      {'pk': pk, 'podii': events[0]})
+      return super(PodiiUpdate, self).post(request, *args, **kwargs)
 
 
 
 
+
+
+
+
+#######################################################################
 #delete podii
-def podii_delete(request, pk):
-    events = Podii.objects.filter(pk=pk)
-    
-    if request.method == "POST":
-        if request.POST.get('yes') is not None:
-          events.delete()
-          return HttpResponseRedirect( u'%s?status_message=Подію успішно видалено!'  % reverse('podii'))
-        elif request.POST.get('cancel_button') is not None:
-          return HttpResponseRedirect( u'%s?status_message=Видалення  події  скасовано!'  % reverse('podii'))
-        
+#stud_delete
+class PodiiDelete(DeleteView):
+  model = Podii
+  template_name = 'podii/podii_delete.html'
+  def get_success_url(self):
+    return u'%s?status_message=Подію успішно видалено!' % reverse('podii')
+  def post(self, request, *args, **kwargs):
+    if request.POST.get('no_delete_button'):
+      return HttpResponseRedirect(u'%s?status_message=Видалення  події відмінено!'% reverse('podii'))
     else:
-        return render(request,
-                      'podii/podii_delete.html',
-                      {'pk': pk, 'podii': events[0]})
+      return super(PodiiDelete, self).post(request, *args, **kwargs)
+

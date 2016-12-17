@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 {% load static from staticfiles %}
-{% block meta_title %}Родії{% endblock meta_title %}
+{% load crispy_forms_tags %}
+{% block meta_title %}Події{% endblock meta_title %}
 {% block title %}
 {% if podii %}
 Редагування  події
@@ -17,101 +18,10 @@
 {% endblock status_message %}
 {% block content %}
 {% if podii %}
-<h1 class="h1">Редагування події {{podii.name}}</h1>
+<p class="form_title">Редагування  події</p>
 {% else %}
-<h1 class="h1">Додавання подій</h1>
+<p class="form_title">Додавання подій</p>
 {% endif %}
-<form 
-{% if podii %}
-action="{% url "podii_edit" podii.id %}"
-{% else %}
-action="{% url "podii_add" %}"
-{% endif %}
-method="post"
-enctype="multipart/form-data" role="form" class="form-horizontal">
-{% csrf_token %}
-
-<!--name-->
-{% if podii %}
-<div class="form-group {% if errors.name %}has-error{% endif%}">
-<label for="" class="col-sm-2 control-label">Заголовок*</label>
-<div class="col-sm-10">
-<input type="text" value="{{ podii.name }}"
-name="name" class="form-control" />
-<span class="help-block">{{ errors.name }}</span>
-</div>
-</div>
-{% else %}
-<div class="form-group {% if errors.name %}has-error{% endif%}">
-<label for="" class="col-sm-2 control-label">Заголовок*</label>
-<div class="col-sm-10">
-<input type="text" value="{{ request.POST.name }}"
-name="name" class="form-control" />
-<span class="help-block">{{ errors.name }}</span>
-</div>
-</div>
-{% endif %}
-
-<!--photo-->
-{% if podii %}
-<div class="form-group {% if errors.photo %}has-error{% endif%}">
-<label for="photo" class="col-sm-2 control-label">Фото</label>
-<div class="col-sm-10">
-<input type="file" value="" name="photo" class="form-control" />
-<span class="help-block">{{ errors.photo }}</span>
-</div>
-</div>
-{% else %}
-<div class="form-group {% if errors.photo %}has-error{% endif%}">
-<label for="photo" class="col-sm-2 control-label">Фото</label>
-<div class="col-sm-10">
-<input type="file" value="" name="photo" class="form-control" />
-<span class="help-block">{{ errors.photo }}</span>
-</div>
-</div>
-{% endif %}
-
-
-
-  
-<!--text-->
-{% if podii %}
-<div class="form-group {% if errors.text %}has-error{% endif%}">
-<label for="text" class="col-sm-2 control-label">Текст статі</label>
-<div class="col-sm-10">
-<input type="text" value="{{ podii.text }}"
-name="text" class="form-control" />
-<span class="help-block">{{ errors.text }}</span>
-</div>
-</div>
-{% else %}
-<div class="form-group {% if errors.text %}has-error{% endif%}">
-<label for="text" class="col-sm-2 control-label">Текст статі</label>
-<div class="col-sm-10">
-<textarea name="text" class="form-control" 
-value="{{ request.POST.text }}"></textarea>
-<span class="help-block">{{ errors.text }}</span>
-</div>
-</div>
-{% endif %}
-
-
-<!--buttom-->
-
-<div class="form-group">
-<label class="col-sm-2 control-label"></label>
-<div class="col-sm-10">
-{% if podii %}
-<input type="submit" value="Зберегти" id="buttom" name="edit_button"
-class="btn btn-primary" />
-{% else %}
-<input type="submit" value="Додати" id="buttom" name="add_button"
-class="btn btn-primary" />
-{% endif %}
-<button type="submit" id="buttom2" name="cancel_button"
-class="btn btn-link">Скасувати</button>
-</div>
-</div>
-</form>
-Поля, позначені  зірочкою,  обовязкові  для  заповнення!
+{% crispy form %}
+<p>Поля, позначені  зірочкою,  обовязкові  для  заповнення!</p>
 {% endblock content %}

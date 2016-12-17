@@ -29,7 +29,7 @@
 textarea,
 select,
 input {
-max-width: 300px;
+max-width: 600px;
 }
 
 
@@ -48,6 +48,7 @@ max-width: 300px;
 
 .h1{
 	padding-left: 190px;
+  max-width: 500px;
 }
 
 
@@ -64,6 +65,16 @@ max-width: 300px;
 }
 
 #textarea{
-  width:400px;
+  width:700px;
   height:400px;
+}
+
+.form_title{
+  padding-left: 400px;
+  font-weight: bold;
+  font-size: 230%;
+}
+
+.form-actions{
+  padding-left: 400px;
 }
